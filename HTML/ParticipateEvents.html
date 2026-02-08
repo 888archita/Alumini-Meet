@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Upcoming Events | College Alumni Network</title>
+  <link rel="stylesheet" href="../CSS/Participate.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+  <div class="page-container">
+    <header class="page-header">
+      <h1>Upcoming Campus Events</h1>
+      <p>Join fellow alumni and faculty for memorable gatherings on campus</p>
+    </header>
+
+    <section class="events-grid" id="events-grid">
+      <!-- Event cards will be dynamically inserted here -->
+    </section>
+
+    <!-- Registration Modal -->
+    <div class="modal" id="registerModal">
+      <div class="modal-content">
+        <button class="modal-close" id="closeModal"><i class="fa-solid fa-times"></i></button>
+        <h2 id="modalEventTitle">Register for Event</h2>
+        
+        <form id="registrationForm" class="registration-form">
+          <div class="form-group">
+            <label for="fullName">Full Name</label>
+            <input 
+              type="text" 
+              id="fullName" 
+              name="fullName" 
+              placeholder="Your full name" 
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input 
+              type="email" 
+              id="email" 
+              name="email" 
+              placeholder="your.email@example.com" 
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input 
+              type="tel" 
+              id="phone" 
+              name="phone" 
+              placeholder="+91 98765 43210" 
+              pattern="[0-9]{10}" 
+              title="Please enter a valid 10-digit phone number"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="batch">Batch / Department</label>
+            <input 
+              type="text" 
+              id="batch" 
+              name="batch" 
+              placeholder="e.g. B.Tech CSE 2020-24 or Faculty - Computer Science" 
+              required
+            >
+          </div>
+
+          <button type="submit" class="btn-register" id="submitRegister">
+            <span class="btn-text">Confirm Registration</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="../JavaScript/Participate.js"></script>
+</body>
+</html>

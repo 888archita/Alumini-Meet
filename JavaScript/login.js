@@ -1,27 +1,28 @@
-// Get the form and message element
-const form = document.getElementById('loginForm');
-const message = document.getElementById('message');
-
-form.addEventListener('submit', function(event) {
-    event.preventDefault(); // Stop the form from submitting normally
-
-    // Get values from the form
-    const userType = document.getElementById('userType').value;
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-    // Simple check (in real app, this would connect to a server)
-    if (userType && email && password) {
-        message.textContent = `Welcome, ${userType}! Logging you in...`;
-        message.style.color = 'green';
-
-        // Optional: Reset form after 2 seconds (just for demo)
-        setTimeout(() => {
-            form.reset();
-            message.textContent = '';
-        }, 2000);
+function showForm(type) {
+    document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(tab => {
+        if (tab.textContent.trim() === (type === 'login' ? 'Login' : 'Sign Up')) {
+            tab.classList.add('active');
+        }
+    })
+    document.getElementById('login-form').classList.add('hidden');
+    document.getElementById('signup-form').classList.add('hidden')
+    if (type === 'login') {
+        document.getElementById('login-form').classList.remove('hidden');
     } else {
-        message.textContent = 'Please fill all fields.';
-        message.style.color = 'red';
+        document.getElementById('signup-form').classList.remove('hidden');
     }
-});
+}
+
+function handleLogin(event) {
+    event.preventDefault();
+    alert('Login functionality - connect to your backend here!');
+    // Add actual login logic (e.g., fetch/API call)
+}
+
+function handleSignup(event) {
+    event.preventDefault();
+    const role = document.getElementById('role').value;
+    alert(`Sign Up as ${role.charAt(0).toUpperCase() + role.slice(1)} - connect to backend!`);
+    // Add actual signup logic
+}

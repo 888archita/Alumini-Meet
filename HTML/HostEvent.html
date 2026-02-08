@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Host an Event | College Alumni Network</title>
+  <link rel="stylesheet" href="../CSS/HostEvent.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+  <div class="page-container">
+    <main class="form-section">
+      <div class="card">
+        <h1>Host an Event</h1>
+        <p class="subtitle">Create memorable campus gatherings for fellow alumni and faculty</p>
+
+        <form id="event-form" class="event-form">
+
+          <div class="form-group">
+            <label for="title">Event Title</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-heading"></i>
+              <input 
+                type="text" 
+                id="title" 
+                name="title" 
+                placeholder="e.g. Annual Alumni Cricket Tournament 2026" 
+                required
+              >
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group half">
+              <label for="category">Event Category</label>
+              <div class="input-wrapper select-wrapper">
+                <i class="fa-solid fa-list-ul"></i>
+                <select id="category" name="category" required>
+                  <option value="" disabled selected>Select category</option>
+                  <option value="reunion">Reunion / Batch Meet</option>
+                  <option value="cultural">Cultural / Fest</option>
+                  <option value="sports">Sports</option>
+                  <option value="seminar">Seminar / Workshop</option>
+                  <option value="career">Career Guidance / Talk</option>
+                  <option value="social">Social / Charity</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group half">
+              <label for="max-participants">Maximum Participants</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-users"></i>
+                <input 
+                  type="number" 
+                  id="max-participants" 
+                  name="maxParticipants" 
+                  min="1" 
+                  placeholder="e.g. 120" 
+                  required
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="description">Event Description</label>
+            <textarea 
+              id="description" 
+              name="description" 
+              rows="6" 
+              placeholder="Tell alumni what the event is about, who should attend, what to expect, any special instructions..." 
+              required
+            ></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group half">
+              <label for="event-date">Event Date & Time</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-calendar-days"></i>
+                <input 
+                  type="datetime-local" 
+                  id="event-date" 
+                  name="eventDate" 
+                  required
+                >
+              </div>
+            </div>
+
+            <div class="form-group half">
+              <label for="registration-closing">Registration Closes</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-clock"></i>
+                <input 
+                  type="datetime-local" 
+                  id="registration-closing" 
+                  name="registrationClosing" 
+                  required
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Event Location</label>
+            <div class="input-wrapper disabled-input">
+              <i class="fa-solid fa-location-dot"></i>
+              <input 
+                type="text" 
+                value="Main Campus, Your College Name" 
+                readonly
+                aria-describedby="location-help"
+              >
+            </div>
+            <small id="location-help" class="help-text">
+              All alumni events are hosted on-campus only.
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label for="banner">Event Banner / Cover Image</label>
+            <div class="file-upload-wrapper">
+              <input 
+                type="file" 
+                id="banner" 
+                name="banner" 
+                accept="image/*" 
+                required
+              >
+              <div class="file-upload-content">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <p>Upload banner image</p>
+                <span>Recommended size: 1200 × 600 px (JPG, PNG, max 2MB)</span>
+              </div>
+              <div class="preview-container" id="preview"></div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit" id="submit-btn">
+            <span class="btn-text">Publish Campus Event</span>
+            <span class="btn-loading">Publishing...</span>
+          </button>
+
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <script src="../JavaScript/HostEvent.js"></script>
+</body>
+</html>

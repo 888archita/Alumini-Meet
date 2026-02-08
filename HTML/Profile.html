@@ -1,0 +1,102 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alumni Profile - College Alumni Network</title>
+    <link rel="stylesheet" href="../CSS/Profile.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Profile Header -->
+        <header class="profile-header">
+            <div class="profile-photo">
+                <img src="placeholder-photo.jpg" alt="Profile Photo">
+            </div>
+            <div class="profile-info">
+                <h1>John Doe</h1>
+                <p>Batch: 2015 | Department: Computer Science | Status: Active Alumni</p>
+            </div>
+            <button class="edit-button" onclick="showEditForm()">Edit Profile</button>
+        </header>
+
+        <!-- Profile Sections -->
+        <section class="profile-section">
+            <h2>Personal Details</h2>
+            <div class="card">
+                <p><strong>Email:</strong> john.doe@example.com</p>
+                <p><strong>Phone:</strong> +1 (123) 456-7890</p>
+            </div>
+        </section>
+
+        <section class="profile-section">
+            <h2>Academic Details</h2>
+            <div class="card">
+                <p><strong>Degree:</strong> B.Tech in Computer Science</p>
+                <p><strong>Batch Year:</strong> 2015</p>
+                <p><strong>Department:</strong> Computer Science</p>
+            </div>
+        </section>
+
+        <section class="profile-section">
+            <h2>Current Job/Organization</h2>
+            <div class="card">
+                <p><strong>Position:</strong> Software Engineer</p>
+                <p><strong>Organization:</strong> Tech Corp</p>
+                <p><strong>Location:</strong> San Francisco, CA</p>
+            </div>
+        </section>
+
+        <section class="profile-section">
+            <h2>About Me</h2>
+            <div class="card">
+                <p>A passionate software engineer with a love for innovation and community building. Proud alumnus of our college!</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="hideEditForm()">&times;</span>
+            <h2>Edit Profile</h2>
+            <form>
+                <label for="full-name">Full Name:</label>
+                <input type="text" id="full-name" value="John Doe">
+
+                <label for="batch-year">Batch Year:</label>
+                <input type="text" id="batch-year" value="2015">
+
+                <label for="department">Department:</label>
+                <input type="text" id="department" value="Computer Science">
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" value="john.doe@example.com">
+
+                <label for="phone">Phone:</label>
+                <input type="tel" id="phone" value="+1 (123) 456-7890">
+
+                <label for="degree">Degree:</label>
+                <input type="text" id="degree" value="B.Tech in Computer Science">
+
+                <label for="position">Position:</label>
+                <input type="text" id="position" value="Software Engineer">
+
+                <label for="organization">Organization:</label>
+                <input type="text" id="organization" value="Tech Corp">
+
+                <label for="location">Location:</label>
+                <input type="text" id="location" value="San Francisco, CA">
+
+                <label for="bio">About Me:</label>
+                <textarea id="bio">A passionate software engineer with a love for innovation and community building. Proud alumnus of our college!</textarea>
+
+                <button type="button" class="save-button" onclick="saveProfile()">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="../JavaScript/Profile.js"></script>
+</body>
+</html>
