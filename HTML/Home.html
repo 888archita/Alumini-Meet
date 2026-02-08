@@ -3,44 +3,46 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Alumni Network - Home</title>
-  <link rel="stylesheet" href="../CSS/Home.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <title>Home | Alumni Network - Holkar Science College</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="../CSS/Home.css" />
 </head>
 <body>
 
-  <!-- Navigation -->
+  <!-- Fixed Navigation -->
   <nav class="navbar">
     <div class="nav-container">
       <div class="logo">
-        <span>Alumni</span>Connect
+        <img src="../images/maic-logo2.png" alt="College Logo" class="logo-img" />
+        <span>MAIC Alumni</span>
       </div>
 
       <ul class="nav-menu">
-        <li><a href="#" class="active">Home</a></li>
+        <li><a href="home.html" class="active">Home</a></li>
+        <li><a href="Profile.html">Profile</a></li>
+        <li><a href="about.html">About College</a></li>
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle">Events</a>
-          <ul class="dropdown-menu">
-            <li><a href="/host-event.html">Host an Event</a></li>
-            <li><a href="/events.html">Participate in Event</a></li>
-          </ul>
+          <a href="#" class="dropbtn">Events <i class="fas fa-chevron-down"></i></a>
+          <div class="dropdown-content">
+            <a href="host-event.html">Host an Event</a>
+            <a href="events.html">Participate in Event</a>
+          </div>
         </li>
-        <li><a href="/about.html">About College</a></li>
-        <li><a href="/profile.html">Profile</a></li>
       </ul>
     </div>
   </nav>
 
-  <!-- Hero / Welcome Section -->
+  <!-- Hero Section -->
   <header class="hero">
     <div class="hero-content">
-      <h1>Welcome back to the <span>Alumni Network</span></h1>
-      <p>Stay connected • Reunite • Create new memories • Give back</p>
-      <div class="hero-actions">
-        <a href="/events.html" class="btn btn-primary">Explore Upcoming Events</a>
-        <a href="/host-event.html" class="btn btn-outline">Host Your Own Event</a>
+      <div class="hero-logo">
+        <img src="https://via.placeholder.com/120x120/3b82f6/ffffff?text=HS" alt="Holkar Science College Logo" />
+      </div>
+      <h1>Government Holkar Science College</h1>
+      <p class="tagline">Connecting Generations • Celebrating Achievements</p>
+      <div class="welcome-box">
+        <h2>Welcome back, Archita!</h2>
+        <p>We're glad you're here. Stay connected with your alma mater, relive memories, and be part of our vibrant community.</p>
       </div>
     </div>
   </header>
@@ -48,65 +50,82 @@
   <!-- Feed / Highlights Section -->
   <main class="feed-section">
     <div class="container">
-      <h2 class="section-title">Recent & Upcoming Highlights</h2>
+
+      <div class="section-title">
+        <h2>Upcoming events</h2>
+        <p>Recent events, memories, and moments shared by alumni & faculty</p>
+      </div>
 
       <div class="feed-grid">
-        
-        <!-- Card 1 -->
+        <!-- Feed Item 1 -->
         <article class="feed-card">
-          <div class="card-image">
-            <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80" alt="Annual Alumni Meet 2025">
-          </div>
-          <div class="card-content">
-            <h3>Annual Alumni Meet 2025</h3>
-            <p class="meta">Feb 15, 2025 • Main Auditorium</p>
-            <p>More than 450 alumni joined us for an unforgettable evening of nostalgia, networking and inspiration.</p>
-            <a href="#" class="card-link">View Photos →</a>
+          <div class="feed-image" style="background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=1200');"></div>
+          <div class="feed-content">
+            <h3>Upcoming event 1</h3>
+            <div class="meta">Dec 15, 2024 • 210 alumni attended</div>
+            <p>Heartwarming moments as the 1999 batch returned to campus after 25 glorious years. Old friendships rekindled, new memories created.</p>
           </div>
         </article>
 
-        <!-- Card 2 -->
-        <article class="feed-card upcoming">
-          <div class="card-image">
-            <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80" alt="TechCon 2025">
-          </div>
-          <div class="card-content">
-            <h3>TechCon 2025 – Alumni Edition</h3>
-            <p class="meta">Mar 28–29, 2025 • Hybrid Event</p>
-            <p>Panel discussions, workshops & networking with industry leaders from our alumni community.</p>
-            <a href="/events.html" class="card-link btn-small">Register Now</a>
-          </div>
-        </article>
-
-        <!-- Card 3 -->
+        <!-- Feed Item 2 -->
         <article class="feed-card">
-          <div class="card-image">
-            <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80" alt="Batch of 2015 Reunion">
-          </div>
-          <div class="card-content">
-            <h3>Batch of 2015 – 10 Year Reunion</h3>
-            <p class="meta">Jan 18, 2025</p>
-            <p>Heartwarming moments as the 2015 batch came together after a decade.</p>
-            <a href="#" class="card-link">See More Photos →</a>
+          <div class="feed-image" style="background-image: url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=1200');"></div>
+          <div class="feed-content">
+            <h3>Upcoming event 2</h3>
+            <div class="meta">Nov 10, 2024 • Supported by alumni</div>
+            <p>Thanks to generous contributions from our alumni, the college now has state-of-the-art labs for physics and biotechnology.</p>
           </div>
         </article>
 
-        <!-- Card 4 -->
-        <article class="feed-card upcoming">
-          <div class="card-image">
-            <img src="https://images.unsplash.com/photo-1517248135467-2c7ed3ab7229?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80" alt="Mentorship Program Launch">
-          </div>
-          <div class="card-content">
-            <h3>Mentorship Program 2025</h3>
-            <p class="meta">Applications open • Ongoing</p>
-            <p>Alumni mentoring current students — sign up as mentor or mentee today!</p>
-            <a href="#" class="card-link btn-small">Apply Now</a>
+        <!-- Feed Item 3 -->
+        <article class="feed-card">
+          <div class="feed-image" style="background-image: url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80&w=1200');"></div>
+          <div class="feed-content">
+            <h3>Upcoming event 3</h3>
+            <div class="meta">Oct 28, 2024 • Dr. Anjali Verma</div>
+            <p>Insightful session on “Data Science in 2025 and Beyond” by our distinguished alumna now leading AI research at IIT Bombay.</p>
           </div>
         </article>
 
+        <!-- Feed Item 4 -->
+        <article class="feed-card">
+          <div class="feed-image" style="background-image: url('https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=1200');"></div>
+          <div class="feed-content">
+            <h3>Upcoming event 4</h3>
+            <div class="meta">Sep 20–22, 2024</div>
+            <p>Alumni vs Students cricket match was the highlight — and yes, the alumni won (barely)!</p>
+          </div>
+        </article>
       </div>
+
     </div>
   </main>
 
+  <!-- Upcoming Events Quick View -->
+  <section class="upcoming">
+    <div class="container">
+      <div class="section-title">
+        <h2>Upcoming Events</h2>
+      </div>
+
+      <div class="events-row">
+        <div class="event-tile">
+          <div class="event-date">28 Mar 2025</div>
+          <h3>Annual Alumni Meet 2025</h3>
+          <p class="location"><i class="fas fa-map-marker-alt"></i> College Campus</p>
+          <a href="events.html" class="btn">Participate</a>
+        </div>
+
+        <div class="event-tile">
+          <div class="event-date">12 Apr 2025</div>
+          <h3>Career Guidance Webinar</h3>
+          <p class="location"><i class="fas fa-laptop"></i> Online (Zoom)</p>
+          <a href="events.html" class="btn">Register</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="../JavaScript/Home.js"></script>
 </body>
 </html>
