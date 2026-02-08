@@ -3,11 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Upcoming Events | College Alumni Network</title>
+  <title>Participate in Events | Alumni Network</title>
+
   <link rel="stylesheet" href="../CSS/Participate.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
+
+  <!-- Your navbar (copy from home.html or use a shared header file later) -->
+  <nav class="navbar">
+    <!-- Paste your navbar code here -->
+  </nav>
 
   <div class="page-container">
     <header class="page-header">
@@ -16,11 +22,11 @@
     </header>
 
     <section class="events-grid" id="events-grid">
-      <!-- Event cards will be dynamically inserted here -->
+      <div class="loading-message">Loading upcoming events...</div>
     </section>
 
-    <!-- Registration Modal -->
-    <div class="modal" id="registerModal">
+    <!-- Optional: Registration Modal (kept from your old code – can be used later) -->
+    <div class="modal" id="registerModal" style="display:none;">
       <div class="modal-content">
         <button class="modal-close" id="closeModal"><i class="fa-solid fa-times"></i></button>
         <h2 id="modalEventTitle">Register for Event</h2>
@@ -28,58 +34,180 @@
         <form id="registrationForm" class="registration-form">
           <div class="form-group">
             <label for="fullName">Full Name</label>
-            <input 
-              type="text" 
-              id="fullName" 
-              name="fullName" 
-              placeholder="Your full name" 
-              required
-            >
+            <input type="text" id="fullName" placeholder="Your full name" required>
           </div>
-
           <div class="form-group">
             <label for="email">Email Address</label>
-            <input 
-              type="email" 
-              id="email" 
-              name="email" 
-              placeholder="your.email@example.com" 
-              required
-            >
+            <input type="email" id="email" placeholder="your.email@example.com" required>
           </div>
-
           <div class="form-group">
             <label for="phone">Phone Number</label>
-            <input 
-              type="tel" 
-              id="phone" 
-              name="phone" 
-              placeholder="+91 98765 43210" 
-              pattern="[0-9]{10}" 
-              title="Please enter a valid 10-digit phone number"
-              required
-            >
+            <input type="tel" id="phone" placeholder="+91 98765 43210" pattern="[0-9]{10}" required>
           </div>
-
           <div class="form-group">
             <label for="batch">Batch / Department</label>
-            <input 
-              type="text" 
-              id="batch" 
-              name="batch" 
-              placeholder="e.g. B.Tech CSE 2020-24 or Faculty - Computer Science" 
-              required
-            >
+            <input type="text" id="batch" placeholder="e.g. B.Tech CSE 2020-24" required>
           </div>
-
-          <button type="submit" class="btn-register" id="submitRegister">
-            <span class="btn-text">Confirm Registration</span>
-          </button>
+          <button type="submit" class="btn-register">Confirm Registration</button>
         </form>
       </div>
     </div>
   </div>
 
-  <script src="../JavaScript/Participate.js"></script>
+  <!-- Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+  <script src="../JavaScript/firebase-init.js"></script>
+  <script src="../JavaScript/auth-protect.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+      const eventsGrid = document.getElementById('events-grid');
+
+      function loadAllUpcomingEvents() {
+        eventsGrid.innerHTML = '<div class="loading-message">Loading upcoming events...</div>';
+
+        const now = firebase.firestore.Timestamp.now();
+
+        db.collection('events')
+          .where('eventDate', '>', now)
+          .orderBy('eventDate', 'asc')
+          .get()
+          .then((snapshot) => {
+            eventsGrid.innerHTML = '';
+
+            if (snapshot.empty) {
+              eventsGrid.innerHTML = `
+                <div class="no-events-message">
+                  <p>No upcoming events at the moment.</p>
+                  <p>Check back soon or consider hosting one!</p>
+                </div>
+              `;
+              return;
+            }
+
+            snapshot.forEach((doc) => {
+              const event = doc.data();
+              const eventId = doc.id;
+
+              const eventDate = event.eventDate.toDate();
+              const dateFormatted = eventDate.toLocaleDateString('en-IN', {
+                weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+              });
+              const timeFormatted = eventDate.toLocaleTimeString('en-IN', {
+                hour: 'numeric', minute: '2-digit', hour12: true
+              });
+
+              const isAttending = auth.currentUser && event.participants?.includes(auth.currentUser.uid);
+
+              const card = document.createElement('div');
+              card.className = 'event-card';
+              card.innerHTML = `
+                ${event.bannerUrl ? 
+                  `<div class="event-banner" style="background-image: url('${event.bannerUrl}');"></div>` : 
+                  `<div class="event-banner-placeholder">${event.title.substring(0, 35)}${event.title.length > 35 ? '...' : ''}</div>`
+                }
+
+                <div class="event-content">
+                  <h3 class="event-title">${event.title}</h3>
+                  
+                  <div class="event-meta">
+                    <span><i class="fas fa-calendar-day"></i> ${dateFormatted} at ${timeFormatted}</span>
+                    <span><i class="fas fa-users"></i> ${event.participantCount || 0} attending</span>
+                    ${event.category ? `<span class="event-category">${event.category}</span>` : ''}
+                  </div>
+
+                  <p class="event-description">
+                    ${event.description.substring(0, 160)}${event.description.length > 160 ? '...' : ''}
+                  </p>
+
+                  <div class="event-actions">
+                    <button class="btn-rsvp ${isAttending ? 'attending' : ''}" 
+                            data-event-id="${eventId}">
+                      ${isAttending ? "✓ I'm attending" : "I'm attending"}
+                    </button>
+                    <span class="event-location">
+                      <i class="fas fa-map-marker-alt"></i> ${event.location || 'Main Campus'}
+                    </span>
+                  </div>
+                </div>
+              `;
+
+              eventsGrid.appendChild(card);
+            });
+
+            attachRSVPButtons();
+          })
+          .catch(err => {
+            console.error("Error loading events:", err);
+            eventsGrid.innerHTML = `
+              <div class="error-message">
+                Failed to load events. Please try again later.
+              </div>
+            `;
+          });
+      }
+
+      function attachRSVPButtons() {
+        document.querySelectorAll('.btn-rsvp').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            if (!auth.currentUser) {
+              alert("Please login to participate.");
+              window.location.href = 'login.html';
+              return;
+            }
+
+            const eventId = btn.dataset.eventId;
+            const uid = auth.currentUser.uid;
+            const eventRef = db.collection('events').doc(eventId);
+
+            try {
+              await db.runTransaction(async (t) => {
+                const docSnap = await t.get(eventRef);
+                if (!docSnap.exists) throw "Event not found";
+
+                const data = docSnap.data();
+                let participants = data.participants || [];
+                let count = data.participantCount || 0;
+
+                if (participants.includes(uid)) {
+                  participants = participants.filter(id => id !== uid);
+                  count = Math.max(0, count - 1);
+                  btn.textContent = "I'm attending";
+                  btn.classList.remove('attending');
+                } else {
+                  participants.push(uid);
+                  count++;
+                  btn.textContent = "✓ I'm attending";
+                  btn.classList.add('attending');
+                }
+
+                t.update(eventRef, {
+                  participants,
+                  participantCount: count
+                });
+              });
+
+              // Optional: refresh whole list
+              // loadAllUpcomingEvents();
+
+            } catch (err) {
+              console.error(err);
+              alert("Could not update attendance. Please try again.");
+            }
+          });
+        });
+      }
+
+      // Load events
+      auth.onAuthStateChanged(() => {
+        loadAllUpcomingEvents();
+      });
+    });
+  </script>
+
 </body>
 </html>

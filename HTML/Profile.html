@@ -1,10 +1,9 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alumni Profile - College Alumni Network</title>
+    <title>My Profile | Alumni Network</title>
     <link rel="stylesheet" href="../CSS/Profile.css">
 </head>
 <body>
@@ -12,11 +11,12 @@
         <!-- Profile Header -->
         <header class="profile-header">
             <div class="profile-photo">
-                <img src="placeholder-photo.jpg" alt="Profile Photo">
+                <img id="profile-photo" src="https://via.placeholder.com/150?text=You" alt="Profile Photo">
             </div>
             <div class="profile-info">
-                <h1>John Doe</h1>
-                <p>Batch: 2015 | Department: Computer Science | Status: Active Alumni</p>
+                <h1 id="full-name-display">Loading...</h1>
+                <p id="basic-info">Batch: — | Department: — | Status: Active Alumni</p>
+                <p id="email-display">Email: —</p>
             </div>
             <button class="edit-button" onclick="showEditForm()">Edit Profile</button>
         </header>
@@ -25,78 +25,224 @@
         <section class="profile-section">
             <h2>Personal Details</h2>
             <div class="card">
-                <p><strong>Email:</strong> john.doe@example.com</p>
-                <p><strong>Phone:</strong> +1 (123) 456-7890</p>
+                <p><strong>Email:</strong> <span id="email-detail">—</span></p>
+                <p><strong>Phone:</strong> <span id="phone-display">—</span></p>
             </div>
         </section>
 
         <section class="profile-section">
             <h2>Academic Details</h2>
             <div class="card">
-                <p><strong>Degree:</strong> B.Tech in Computer Science</p>
-                <p><strong>Batch Year:</strong> 2015</p>
-                <p><strong>Department:</strong> Computer Science</p>
+                <p><strong>Degree:</strong> <span id="degree-display">—</span></p>
+                <p><strong>Batch Year:</strong> <span id="batch-display">—</span></p>
+                <p><strong>Department:</strong> <span id="department-display">—</span></p>
             </div>
         </section>
 
         <section class="profile-section">
-            <h2>Current Job/Organization</h2>
+            <h2>Current Job / Organization</h2>
             <div class="card">
-                <p><strong>Position:</strong> Software Engineer</p>
-                <p><strong>Organization:</strong> Tech Corp</p>
-                <p><strong>Location:</strong> San Francisco, CA</p>
+                <p><strong>Position:</strong> <span id="position-display">—</span></p>
+                <p><strong>Organization:</strong> <span id="organization-display">—</span></p>
+                <p><strong>Location:</strong> <span id="location-display">—</span></p>
             </div>
         </section>
 
         <section class="profile-section">
             <h2>About Me</h2>
             <div class="card">
-                <p>A passionate software engineer with a love for innovation and community building. Proud alumnus of our college!</p>
+                <p id="bio-display">No bio yet. Tell us something about yourself!</p>
             </div>
         </section>
     </div>
 
     <!-- Edit Profile Modal -->
-    <div id="edit-modal" class="modal">
+    <div id="edit-modal" class="modal" style="display:none;">
         <div class="modal-content">
-            <span class="close" onclick="hideEditForm()">&times;</span>
+            <span class="close" onclick="hideEditForm()">×</span>
             <h2>Edit Profile</h2>
-            <form>
-                <label for="full-name">Full Name:</label>
-                <input type="text" id="full-name" value="John Doe">
+            <form id="edit-profile-form">
 
-                <label for="batch-year">Batch Year:</label>
-                <input type="text" id="batch-year" value="2015">
+                <label for="full-name">Full Name</label>
+                <input type="text" id="full-name" required>
 
-                <label for="department">Department:</label>
-                <input type="text" id="department" value="Computer Science">
+                <label for="batch-year">Batch Year</label>
+                <input type="text" id="batch-year" required>
 
-                <label for="email">Email:</label>
-                <input type="email" id="email" value="john.doe@example.com">
+                <label for="department">Department</label>
+                <input type="text" id="department" required>
 
-                <label for="phone">Phone:</label>
-                <input type="tel" id="phone" value="+1 (123) 456-7890">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone">
 
-                <label for="degree">Degree:</label>
-                <input type="text" id="degree" value="B.Tech in Computer Science">
+                <label for="degree">Degree</label>
+                <input type="text" id="degree">
 
-                <label for="position">Position:</label>
-                <input type="text" id="position" value="Software Engineer">
+                <label for="position">Current Position</label>
+                <input type="text" id="position">
 
-                <label for="organization">Organization:</label>
-                <input type="text" id="organization" value="Tech Corp">
+                <label for="organization">Organization / Company</label>
+                <input type="text" id="organization">
 
-                <label for="location">Location:</label>
-                <input type="text" id="location" value="San Francisco, CA">
+                <label for="location">Location</label>
+                <input type="text" id="location">
 
-                <label for="bio">About Me:</label>
-                <textarea id="bio">A passionate software engineer with a love for innovation and community building. Proud alumnus of our college!</textarea>
+                <label for="bio">About Me</label>
+                <textarea id="bio" rows="4"></textarea>
 
-                <button type="button" class="save-button" onclick="saveProfile()">Save Changes</button>
+                <button type="submit" class="save-button">Save Changes</button>
             </form>
         </div>
     </div>
 
-    <script src="../JavaScript/Profile.js"></script>
+    <!-- ============================================= -->
+    <!--               SCRIPTS                         -->
+    <!-- ============================================= -->
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+    <!-- Firebase Initialization -->
+    <script src="../JavaScript/firebase-init.js"></script>
+
+    <!-- Page Protection -->
+    <script src="../JavaScript/auth-protect.js"></script>
+
+    <!-- Profile Logic -->
+    <script>
+        // =============================================
+        //          PROFILE PAGE LOGIC
+        // =============================================
+
+        const user = auth.currentUser;
+
+        // Elements
+        const fullNameDisplay = document.getElementById('full-name-display');
+        const basicInfo = document.getElementById('basic-info');
+        const emailDisplay = document.getElementById('email-display');
+        const emailDetail = document.getElementById('email-detail');
+        const phoneDisplay = document.getElementById('phone-display');
+        const batchDisplay = document.getElementById('batch-display');
+        const departmentDisplay = document.getElementById('department-display');
+        const degreeDisplay = document.getElementById('degree-display');
+        const positionDisplay = document.getElementById('position-display');
+        const organizationDisplay = document.getElementById('organization-display');
+        const locationDisplay = document.getElementById('location-display');
+        const bioDisplay = document.getElementById('bio-display');
+
+        // Modal elements
+        const editModal = document.getElementById('edit-modal');
+        const editForm = document.getElementById('edit-profile-form');
+
+        function loadProfileData() {
+            const uid = auth.currentUser.uid;
+
+            db.collection('alumni').doc(uid).get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        const data = doc.data();
+
+                        fullNameDisplay.textContent = data.name || 'Alumni';
+                        emailDisplay.textContent = data.email || auth.currentUser.email;
+                        emailDetail.textContent = data.email || auth.currentUser.email;
+                        phoneDisplay.textContent = data.phone || '—';
+                        batchDisplay.textContent = data.batch || '—';
+                        departmentDisplay.textContent = data.department || '—';
+                        degreeDisplay.textContent = data.degree || '—';
+                        positionDisplay.textContent = data.position || '—';
+                        organizationDisplay.textContent = data.organization || '—';
+                        locationDisplay.textContent = data.location || '—';
+                        bioDisplay.textContent = data.bio || 'No bio yet. Tell us something about yourself!';
+
+                        basicInfo.textContent = `Batch: ${data.batch || '—'} | Department: ${data.department || '—'} | Status: Active Alumni`;
+                    } else {
+                        // No profile yet → show default + encourage to fill
+                        fullNameDisplay.textContent = auth.currentUser.displayName || 'New Alumni';
+                        emailDisplay.textContent = auth.currentUser.email;
+                        emailDetail.textContent = auth.currentUser.email;
+                        bioDisplay.textContent = 'Please complete your profile to connect better with the community!';
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error loading profile:", error);
+                    alert("Could not load profile. Please try again.");
+                });
+        }
+
+        function showEditForm() {
+            const uid = auth.currentUser.uid;
+
+            db.collection('alumni').doc(uid).get()
+                .then((doc) => {
+                    let data = {};
+                    if (doc.exists) {
+                        data = doc.data();
+                    }
+
+                    document.getElementById('full-name').value = data.name || '';
+                    document.getElementById('batch-year').value = data.batch || '';
+                    document.getElementById('department').value = data.department || '';
+                    document.getElementById('phone').value = data.phone || '';
+                    document.getElementById('degree').value = data.degree || '';
+                    document.getElementById('position').value = data.position || '';
+                    document.getElementById('organization').value = data.organization || '';
+                    document.getElementById('location').value = data.location || '';
+                    document.getElementById('bio').value = data.bio || '';
+
+                    editModal.style.display = 'block';
+                });
+        }
+
+        function hideEditForm() {
+            editModal.style.display = 'none';
+        }
+
+        // Save profile changes
+        editForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const uid = auth.currentUser.uid;
+            const updatedData = {
+                name: document.getElementById('full-name').value.trim(),
+                batch: document.getElementById('batch-year').value.trim(),
+                department: document.getElementById('department').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                degree: document.getElementById('degree').value.trim(),
+                position: document.getElementById('position').value.trim(),
+                organization: document.getElementById('organization').value.trim(),
+                location: document.getElementById('location').value.trim(),
+                bio: document.getElementById('bio').value.trim(),
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                email: auth.currentUser.email   // keep email synced
+            };
+
+            db.collection('alumni').doc(uid).set(updatedData, { merge: true })
+                .then(() => {
+                    alert('Profile updated successfully!');
+                    hideEditForm();
+                    loadProfileData();
+                })
+                .catch((error) => {
+                    console.error("Error updating profile:", error);
+                    alert('Failed to save profile: ' + error.message);
+                });
+        });
+
+        // Load profile when user is authenticated
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                loadProfileData();
+            }
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target === editModal) {
+                hideEditForm();
+            }
+        }
+    </script>
 </body>
 </html>

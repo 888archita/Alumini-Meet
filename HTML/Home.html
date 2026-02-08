@@ -4,8 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Home | Alumni Network - Holkar Science College</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" href="../CSS/Home.css" />
+  
+  <!-- Font Awesome (removed integrity to avoid warning) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+<link rel="stylesheet" href="../CSS/Home.css" />
 </head>
 <body>
 
@@ -24,9 +27,17 @@
         <li class="dropdown">
           <a href="#" class="dropbtn">Events <i class="fas fa-chevron-down"></i></a>
           <div class="dropdown-content">
-            <a href="host-event.html">Host an Event</a>
-            <a href="events.html">Participate in Event</a>
+            <a href="HostEvent.html">Host an Event</a>
+            <a href="ParticipateEvents.html">Participate in Event</a>
           </div>
+        </li>
+
+        <!-- Authentication links (will be shown/hidden by JS) -->
+        <li id="auth-guest" class="auth-link">
+          <a href="login.html" id="login-link">Login / Sign Up</a>
+        </li>
+        <li id="auth-user" class="auth-link" style="display: none;">
+          <a href="#" id="logout-btn">Logout</a>
         </li>
       </ul>
     </div>
@@ -40,9 +51,10 @@
       </div>
       <h1>Government Holkar Science College</h1>
       <p class="tagline">Connecting Generations • Celebrating Achievements</p>
+      
       <div class="welcome-box">
-        <h2>Welcome back, Archita!</h2>
-        <p>We're glad you're here. Stay connected with your alma mater, relive memories, and be part of our vibrant community.</p>
+        <h2 id="welcome-message">Welcome to the Alumni Network</h2>
+        <p id="welcome-text">Please sign in to access your profile and events</p>
       </div>
     </div>
   </header>
@@ -101,31 +113,85 @@
     </div>
   </main>
 
-  <!-- Upcoming Events Quick View -->
-  <section class="upcoming">
-    <div class="container">
-      <div class="section-title">
-        <h2>Upcoming Events</h2>
-      </div>
+  <!-- ============================================= -->
+  <!--               SCRIPTS - in correct order      -->
+  <!-- ============================================= -->
 
-      <div class="events-row">
-        <div class="event-tile">
-          <div class="event-date">28 Mar 2025</div>
-          <h3>Annual Alumni Meet 2025</h3>
-          <p class="location"><i class="fas fa-map-marker-alt"></i> College Campus</p>
-          <a href="events.html" class="btn">Participate</a>
-        </div>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 
-        <div class="event-tile">
-          <div class="event-date">12 Apr 2025</div>
-          <h3>Career Guidance Webinar</h3>
-          <p class="location"><i class="fas fa-laptop"></i> Online (Zoom)</p>
-          <a href="events.html" class="btn">Register</a>
-        </div>
-      </div>
-    </div>
-  </section>
+  <!-- Your Firebase config & initialization -->
+  <script src="../JavaScript/firebase-init.js"></script>
 
+  <!-- Authentication logic for this page -->
+  <script>
+    // Wait until Firebase is ready
+    document.addEventListener('DOMContentLoaded', () => {
+
+      const welcomeMessage = document.getElementById('welcome-message');
+      const welcomeText = document.getElementById('welcome-text');
+      const loginLink = document.getElementById('auth-guest');
+      const userSection = document.getElementById('auth-user');
+      const logoutBtn = document.getElementById('logout-btn');
+
+      // Listen for auth state changes
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          // User is signed in
+          let displayName = user.displayName || user.email.split('@')[0] || 'Alumni';
+
+          welcomeMessage.textContent = `Welcome back, ${displayName}!`;
+          welcomeText.textContent = `We're glad you're here. Stay connected with your alma mater.`;
+
+          loginLink.style.display = 'none';
+          userSection.style.display = 'block';
+        } else {
+          // User is signed out
+          welcomeMessage.textContent = 'Welcome to the Alumni Network';
+          welcomeText.textContent = 'Please sign in to access your profile, events and more.';
+
+          loginLink.style.display = 'block';
+          userSection.style.display = 'none';
+        }
+      });
+
+      // Logout button handler
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          auth.signOut()
+            .then(() => {
+              alert('You have been logged out.');
+              window.location.href = 'home.html';
+            })
+            .catch((error) => {
+              alert('Logout failed: ' + error.message);
+            });
+        });
+      }
+
+    });
+  </script>
+
+  <!-- Your existing page scripts (if any) -->
   <script src="../JavaScript/Home.js"></script>
+    <!-- ... rest of your page content ... -->
+
+  <!-- Firebase & Auth Protection -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+  <script src="../JavaScript/firebase-init.js"></script>
+  <script src="../JavaScript/auth-protect.js"></script>
+
+  <!-- Your page-specific scripts (if any) -->
+  <!-- <script src="../JavaScript/Profile.js"></script> -->
+  <!-- <script src="../JavaScript/HostEvent.js"></script> -->
+
 </body>
 </html>
+
+</body>
+</html> 

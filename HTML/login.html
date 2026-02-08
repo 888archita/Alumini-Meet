@@ -3,64 +3,148 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>College Portal - Login / Sign Up</title>
-  <!-- CSS_login.css-->
-  <link rel="stylesheet" href="../CSS/login.css"> 
+  <title>Login | Alumni Network - Holkar Science College</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="../CSS/login.css">
 </head>
 <body>
-  <div class="container" >
+
+  <div class="container">
     <div class="form-box">
-      <h2>College Portal</h2>
-      <div class="tabs">
-        <div class="tab active" onclick="showForm('login')">Login</div>
-        <div class="tab" onclick="showForm('signup')">Sign Up</div>
-      </div>  
+      <h2>Alumni Login</h2>
+      <p class="subtitle">Sign in to access your profile and events</p>
 
       <!-- Login Form -->
       <form id="login-form" onsubmit="handleLogin(event)">
         <div class="form-group">
           <label for="login-email">Email</label>
-          <input type="email" id="login-email" required>
+          <input 
+            type="email" 
+            id="login-email" 
+            placeholder="yourname@example.com"
+            required
+            autocomplete="email"
+          >
         </div>
+
         <div class="form-group">
           <label for="login-password">Password</label>
-          <input type="password" id="login-password" required>
+          <input 
+            type="password" 
+            id="login-password" 
+            placeholder="••••••••"
+            required
+            autocomplete="current-password"
+          >
         </div>
-        <button type="submit">Login</button>
-        <p class="signup-link">
-          Don't have an account?
-          <a href="#" onclick="showForm('signup'); return false;" class="link"> Sign up now</a>
-        </p>
-      </form>
 
-      <!-- Sign Up Form -->
-      <form id="signup-form" class="hidden" onsubmit="handleSignup(event)">
-        <div class="form-group">
-          <label for="signup-name">Full Name</label>
-          <input type="text" id="signup-name" required>
+        <button type="submit" id="login-btn">Login</button>
+
+        <div class="extra-links">
+          <a href="home.html">← Back to Home</a>
+          <!-- <a href="#" class="forgot-password">Forgot password?</a> -->
         </div>
-        <div class="form-group">
-         <label for="signup-dpt">Department</label>
-         <input type="text" id="signup-dpt" required>
-        </div>
-        <div class="form-group">
-         <label for="signup-batch">Batch</label>
-         <input type="text" id="signup-batch" required>
-        </div>
-        <div class="form-group">
-          <label for="signup-email">Email</label>
-          <input type="email" id="signup-email" required>
-        </div>
-        <div class="form-group">
-         <label for="signup-password">Password</label>
-         <input type="password" id="signup-password" required>
-        </div>
-        <button type="submit">Sign Up</button>
+
+        <div id="error-message" class="error hidden"></div>
+        <div id="success-message" class="success hidden"></div>
       </form>
     </div>
   </div>
-   
-  <!-- JavaScript_login.js-->
-  <script src="../JavaScript/login.js"></script> 
+
+  <!-- ============================================= -->
+  <!--               SCRIPTS - in correct order      -->
+  <!-- ============================================= -->
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+  <!-- Your Firebase initialization -->
+  <script src="../JavaScript/firebase-init.js"></script>
+
+  <!-- Login logic -->
+  <script>
+    // =============================================
+    //              LOGIN HANDLER
+    // =============================================
+
+    function showMessage(elementId, text, isError = false) {
+      const el = document.getElementById(elementId);
+      el.textContent = text;
+      el.classList.remove('hidden');
+      if (isError) {
+        el.classList.add('error');
+        el.classList.remove('success');
+      } else {
+        el.classList.add('success');
+        el.classList.remove('error');
+      }
+    }
+
+    function clearMessages() {
+      document.getElementById('error-message').classList.add('hidden');
+      document.getElementById('success-message').classList.add('hidden');
+    }
+
+    function handleLogin(event) {
+      event.preventDefault();
+      clearMessages();
+
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      const loginBtn = document.getElementById('login-btn');
+
+      if (!email || !password) {
+        showMessage('error-message', 'Please fill in both email and password', true);
+        return;
+      }
+
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Logging in...';
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          // Successful login
+          const user = userCredential.user;
+          showMessage('success-message', 'Login successful! Redirecting...');
+
+          // Small delay so user can see success message
+          setTimeout(() => {
+            window.location.href = 'home.html';
+          }, 1200);
+        })
+        .catch((error) => {
+          let message = 'Login failed. Please try again.';
+
+          // Common Firebase error messages made more user-friendly
+          if (error.code === 'auth/user-not-found') {
+            message = 'No account found with this email.';
+          } else if (error.code === 'auth/wrong-password') {
+            message = 'Incorrect password.';
+          } else if (error.code === 'auth/invalid-email') {
+            message = 'Invalid email format.';
+          } else if (error.code === 'auth/too-many-requests') {
+            message = 'Too many failed attempts. Try again later.';
+          } else {
+            message = error.message;
+          }
+
+          showMessage('error-message', message, true);
+          loginBtn.disabled = false;
+          loginBtn.textContent = 'Login';
+        });
+    }
+
+    // Optional: Listen to auth state (can be used for protection later)
+    auth.onAuthStateChanged((user) => {
+      if (user && window.location.pathname.includes('login.html')) {
+        // If already logged in → go to home
+        // (prevents logged-in users from seeing login page)
+        window.location.href = 'home.html';
+      }
+    });
+  </script>
+
 </body>
 </html>

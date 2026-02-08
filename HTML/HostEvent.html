@@ -18,13 +18,12 @@
         <form id="event-form" class="event-form">
 
           <div class="form-group">
-            <label for="title">Event Title</label>
+            <label for="title">Event Title <span class="required">*</span></label>
             <div class="input-wrapper">
               <i class="fa-solid fa-heading"></i>
               <input 
                 type="text" 
                 id="title" 
-                name="title" 
                 placeholder="e.g. Annual Alumni Cricket Tournament 2026" 
                 required
               >
@@ -33,10 +32,10 @@
 
           <div class="form-row">
             <div class="form-group half">
-              <label for="category">Event Category</label>
+              <label for="category">Event Category <span class="required">*</span></label>
               <div class="input-wrapper select-wrapper">
                 <i class="fa-solid fa-list-ul"></i>
-                <select id="category" name="category" required>
+                <select id="category" required>
                   <option value="" disabled selected>Select category</option>
                   <option value="reunion">Reunion / Batch Meet</option>
                   <option value="cultural">Cultural / Fest</option>
@@ -50,13 +49,12 @@
             </div>
 
             <div class="form-group half">
-              <label for="max-participants">Maximum Participants</label>
+              <label for="max-participants">Maximum Participants <span class="required">*</span></label>
               <div class="input-wrapper">
                 <i class="fa-solid fa-users"></i>
                 <input 
                   type="number" 
                   id="max-participants" 
-                  name="maxParticipants" 
                   min="1" 
                   placeholder="e.g. 120" 
                   required
@@ -66,38 +64,35 @@
           </div>
 
           <div class="form-group">
-            <label for="description">Event Description</label>
+            <label for="description">Event Description <span class="required">*</span></label>
             <textarea 
               id="description" 
-              name="description" 
               rows="6" 
-              placeholder="Tell alumni what the event is about, who should attend, what to expect, any special instructions..." 
+              placeholder="Tell alumni what the event is about, who should attend, what to expect..." 
               required
             ></textarea>
           </div>
 
           <div class="form-row">
             <div class="form-group half">
-              <label for="event-date">Event Date & Time</label>
+              <label for="event-date">Event Date & Time <span class="required">*</span></label>
               <div class="input-wrapper">
                 <i class="fa-solid fa-calendar-days"></i>
                 <input 
                   type="datetime-local" 
                   id="event-date" 
-                  name="eventDate" 
                   required
                 >
               </div>
             </div>
 
             <div class="form-group half">
-              <label for="registration-closing">Registration Closes</label>
+              <label for="registration-closing">Registration Closes <span class="required">*</span></label>
               <div class="input-wrapper">
                 <i class="fa-solid fa-clock"></i>
                 <input 
                   type="datetime-local" 
                   id="registration-closing" 
-                  name="registrationClosing" 
                   required
                 >
               </div>
@@ -105,43 +100,38 @@
           </div>
 
           <div class="form-group">
-            <label>Event Location</label>
-            <div class="input-wrapper disabled-input">
+            <label for="location">Event Location</label>
+            <div class="input-wrapper">
               <i class="fa-solid fa-location-dot"></i>
               <input 
                 type="text" 
-                value="Main Campus, Your College Name" 
-                readonly
-                aria-describedby="location-help"
+                id="location"
+                placeholder="e.g. Main Auditorium, Holkar Science College"
+                value="Main Campus, Holkar Science College"
               >
             </div>
-            <small id="location-help" class="help-text">
-              All alumni events are hosted on-campus only.
-            </small>
           </div>
 
           <div class="form-group">
-            <label for="banner">Event Banner / Cover Image</label>
-            <div class="file-upload-wrapper">
+            <label for="banner-url">Event Banner Image URL</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-image"></i>
               <input 
-                type="file" 
-                id="banner" 
-                name="banner" 
-                accept="image/*" 
-                required
+                type="url" 
+                id="banner-url" 
+                placeholder="https://example.com/my-event-banner.jpg"
               >
-              <div class="file-upload-content">
-                <i class="fa-solid fa-cloud-arrow-up"></i>
-                <p>Upload banner image</p>
-                <span>Recommended size: 1200 × 600 px (JPG, PNG, max 2MB)</span>
-              </div>
-              <div class="preview-container" id="preview"></div>
             </div>
+            <small class="help-text">
+              Paste a direct image link (recommended 1200×600 px). File upload coming soon.
+            </small>
           </div>
 
+          <div id="form-message" class="form-message hidden"></div>
+
           <button type="submit" class="btn-submit" id="submit-btn">
-            <span class="btn-text">Publish Campus Event</span>
-            <span class="btn-loading">Publishing...</span>
+            <span class="btn-text">Publish Event</span>
+            <span class="btn-loading hidden">Publishing...</span>
           </button>
 
         </form>
@@ -149,6 +139,111 @@
     </main>
   </div>
 
-  <script src="../JavaScript/HostEvent.js"></script>
+  <!-- ============================================= -->
+  <!--               SCRIPTS                         -->
+  <!-- ============================================= -->
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+  <!-- Firebase Initialization -->
+  <script src="../JavaScript/firebase-init.js"></script>
+
+  <!-- Page Protection -->
+  <script src="../JavaScript/auth-protect.js"></script>
+
+  <!-- Event Creation Logic -->
+  <script>
+    const eventForm = document.getElementById('event-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const btnText = submitBtn.querySelector('.btn-text');
+    const btnLoading = submitBtn.querySelector('.btn-loading');
+    const messageEl = document.getElementById('form-message');
+
+    function showMessage(text, isError = false) {
+      messageEl.textContent = text;
+      messageEl.classList.remove('hidden', 'success', 'error');
+      messageEl.classList.add(isError ? 'error' : 'success');
+    }
+
+    function resetButton() {
+      submitBtn.disabled = false;
+      btnText.classList.remove('hidden');
+      btnLoading.classList.add('hidden');
+    }
+
+    eventForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Basic validation (beyond HTML required)
+      const title = document.getElementById('title').value.trim();
+      const category = document.getElementById('category').value;
+      const maxParticipants = parseInt(document.getElementById('max-participants').value);
+      const description = document.getElementById('description').value.trim();
+      const eventDate = document.getElementById('event-date').value;
+      const registrationClosing = document.getElementById('registration-closing').value;
+      const location = document.getElementById('location').value.trim();
+      const bannerUrl = document.getElementById('banner-url').value.trim();
+
+      if (!title || !category || !description || !eventDate || !registrationClosing) {
+        showMessage("Please fill all required fields.", true);
+        return;
+      }
+
+      if (maxParticipants < 1) {
+        showMessage("Maximum participants must be at least 1.", true);
+        return;
+      }
+
+      if (new Date(registrationClosing) >= new Date(eventDate)) {
+        showMessage("Registration closing time must be before event start time.", true);
+        return;
+      }
+
+      // Prepare data
+      const eventData = {
+        title,
+        category,
+        maxParticipants,
+        currentParticipants: 0,
+        description,
+        eventDate: firebase.firestore.Timestamp.fromDate(new Date(eventDate)),
+        registrationClosing: firebase.firestore.Timestamp.fromDate(new Date(registrationClosing)),
+        location: location || "Main Campus, Holkar Science College",
+        bannerUrl: bannerUrl || null,
+        createdBy: auth.currentUser.uid,
+        createdByEmail: auth.currentUser.email,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        status: "upcoming"   // can be upcoming, ongoing, completed later
+      };
+
+      // UI feedback
+      submitBtn.disabled = true;
+      btnText.classList.add('hidden');
+      btnLoading.classList.remove('hidden');
+      showMessage("Publishing event...");
+
+      try {
+        await db.collection('events').add(eventData);
+
+        showMessage("Event published successfully! ✓", false);
+        
+        // Reset form
+        eventForm.reset();
+        
+        // Redirect after 2 seconds
+        setTimeout(() => {
+          window.location.href = "home.html";
+        }, 1800);
+
+      } catch (error) {
+        console.error("Error creating event:", error);
+        showMessage("Failed to publish event: " + error.message, true);
+        resetButton();
+      }
+    });
+  </script>
 </body>
 </html>
